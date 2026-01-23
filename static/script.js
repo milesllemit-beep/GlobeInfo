@@ -1,83 +1,59 @@
-document.addEventListener("DOMContentLoaded", function() {
-    console.log("GlobeInfo JS Loaded and Ready"); // Debug check
+document.addEventListener('DOMContentLoaded', () => {
+    const searchBtn = document.getElementById('searchBtn');
+    const searchInput = document.getElementById('searchInput');
 
-    const searchBtn = document.getElementById("searchBtn");
-    const redoBtn = document.getElementById("redoBtn");
-    const exitBtn = document.getElementById("exitBtn");
-    const searchInput = document.getElementById("searchInput");
-
-    // Function to fetch and display country data
-    async function searchCountry() {
+    async function handleSearch() {
         const countryName = searchInput.value.trim();
-        console.log("Attempting search for:", countryName); // Debug check
-        
-        if (!countryName) {
-            alert("Please enter a country name!");
-            return;
-        }
+        if (!countryName) return;
+
+        searchBtn.disabled = true;
+        searchBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
 
         try {
-            // Using a slightly more flexible search endpoint
-            const response = await fetch(`https://restcountries.com/v3.1/name/${countryName}`);
-            
-            if (!response.ok) {
-                throw new Error("Country not found. Please try another name.");
-            }
-
+            const response = await fetch(`/api/country?name=${countryName}`);
             const data = await response.json();
-            const country = data[0];
 
-            // Update Text Info
-            const infoList = document.querySelectorAll(".info li");
-            if (infoList.length >= 5) {
-                infoList[0].innerHTML = `🏳️ <strong>Country:</strong> ${country.name.common}`;
-                infoList[1].innerHTML = `🏛️ <strong>Capital:</strong> ${country.capital ? country.capital[0] : 'N/A'}`;
-                infoList[2].innerHTML = `👥 <strong>Population:</strong> ${country.population.toLocaleString()}`;
-                infoList[3].innerHTML = `🌎 <strong>Region:</strong> ${country.region}`;
-                infoList[4].innerHTML = `🗣️ <strong>Language:</strong> ${Object.values(country.languages || {}).join(", ") || 'N/A'}`;
+            if (data.error) {
+                alert("Country not found! Try again.");
+                return;
             }
 
-            // Update Flag
-            const flagImg = document.querySelector(".flag");
-            if (flagImg) flagImg.src = country.flags.svg;
+            // Update Statistics
+            document.getElementById('res-country').textContent = data.country;
+            document.getElementById('res-capital').textContent = data.capital;
+            document.getElementById('res-population').textContent = data.population.toLocaleString();
+            document.getElementById('res-region').textContent = data.region;
+            document.getElementById('res-language').textContent = data.language;
+            document.getElementById('res-currency').textContent = data.currency_name;
+            document.getElementById('res-symbol').textContent = data.currency_symbol;
+            document.getElementById('flag').src = data.flag;
 
-            // Update Currency
-            const currencyDiv = document.querySelector(".currency");
-            if (currencyDiv && country.currencies) {
-                const currencyKey = Object.keys(country.currencies)[0];
-                const currencySymbol = country.currencies[currencyKey].symbol || currencyKey;
-                currencyDiv.innerText = currencySymbol;
-            }
+            // Update Dynamic Fact Section
+            document.getElementById('fact-image').src = data.fact_image;
+            document.getElementById('fact-text').textContent = data.fact_text;
+            document.getElementById('wikiLink').href = `https://en.wikipedia.org/wiki/${data.country}`;
 
         } catch (error) {
-            console.error("Error fetching data:", error);
-            alert(error.message);
+            console.error("Error:", error);
+        } finally {
+            searchBtn.disabled = false;
+            searchBtn.innerHTML = 'Search';
         }
     }
 
-    // Attach Event Listeners
-    if (searchBtn) {
-        searchBtn.onclick = searchCountry; // Using .onclick for maximum compatibility
-    }
+    searchBtn.onclick = handleSearch;
+    searchInput.onkeypress = (e) => { if(e.key === 'Enter') handleSearch(); };
 
-    if (searchInput) {
-        searchInput.addEventListener("keypress", (e) => {
-            if (e.key === "Enter") searchCountry();
-        });
-    }
+    // Reset Button
+    document.getElementById('resetBtn').onclick = () => {
+        searchInput.value = '';
+        location.reload();
+    };
 
-    if (redoBtn) {
-        redoBtn.addEventListener("click", () => {
-            searchInput.value = "";
-            location.reload(); 
-        });
-    }
-
-    if (exitBtn) {
-        exitBtn.addEventListener("click", () => {
-            if (confirm("Are you sure you want to exit?")) {
-                window.location.href = "https://www.google.com";
-            }
-        });
-    }
+    // Exit Button
+    document.getElementById('exitBtn').onclick = () => {
+        if(confirm("Are you sure you want to exit?")) {
+            window.location.href = "https://www.google.com";
+        }
+    };
 });

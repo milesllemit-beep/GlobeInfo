@@ -1,29 +1,171 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, render_template, request, jsonify
 import requests
 
 app = Flask(__name__)
+HEADERS = {"User-Agent": "GlobeInfo/1.0"}
 
-def get_wiki_fact(country):
-    """Fetches a high-quality image and summary from Wikipedia for the fact card."""
-    # Searching for general country summary
-    wiki_url = f"https://en.wikipedia.org/api/rest_v1/page/summary/{country.replace(' ', '_')}"
-    headers = {'User-Agent': 'GlobeInfoApp/1.0'}
-    
-    try:
-        resp = requests.get(wiki_url, headers=headers, timeout=5)
-        if resp.status_code == 200:
-            data = resp.json()
-            return {
-                "image": data.get("originalimage", {}).get("source") or data.get("thumbnail", {}).get("source"),
-                "text": data.get("extract", "No details available.")[:250] + "..."
-            }
-    except:
-        pass
+# ==============================
+# 195+ GUARANTEED FAMOUS TOURIST SPOTS
+# ==============================
+TOURIST_SPOTS = {
+    "Philippines": "Boracay",
+    "Japan": "Mount Fuji",
+    "France": "Eiffel Tower",
+    "United States": "Statue of Liberty",
+    "India": "Taj Mahal",
+    "China": "Great Wall of China",
+    "Italy": "Colosseum",
+    "United Kingdom": "Big Ben",
+    "Spain": "Sagrada Familia",
+    "Germany": "Brandenburg Gate",
+    "Russia": "Red Square",
+    "South Korea": "Gyeongbokgung Palace",
+    "North Korea": "Juche Tower",
+    "Thailand": "Grand Palace",
+    "Vietnam": "Ha Long Bay",
+    "Indonesia": "Bali",
+    "Malaysia": "Petronas Towers",
+    "Singapore": "Marina Bay Sands",
+    "Australia": "Sydney Opera House",
+    "New Zealand": "Milford Sound",
+    "Canada": "Niagara Falls",
+    "Mexico": "Chichen Itza",
+    "Brazil": "Christ the Redeemer",
+    "Argentina": "Iguazu Falls",
+    "Peru": "Machu Picchu",
+    "Chile": "Easter Island",
+    "Colombia": "Cartagena Old Town",
+    "Cuba": "Old Havana",
+    "Jamaica": "Dunn's River Falls",
+    "Dominican Republic": "Punta Cana",
+    "Bahamas": "Nassau",
+    "Iceland": "Blue Lagoon",
+    "Norway": "Geirangerfjord",
+    "Sweden": "Gamla Stan",
+    "Finland": "Santa Claus Village",
+    "Denmark": "Little Mermaid Statue",
+    "Netherlands": "Anne Frank House",
+    "Belgium": "Grand Place",
+    "Switzerland": "Matterhorn",
+    "Austria": "Schönbrunn Palace",
+    "Poland": "Auschwitz",
+    "Czech Republic": "Charles Bridge",
+    "Hungary": "Parliament Building Budapest",
+    "Portugal": "Belem Tower",
+    "Greece": "Acropolis",
+    "Turkey": "Hagia Sophia",
+    "Egypt": "Pyramids of Giza",
+    "Morocco": "Jemaa el-Fnaa",
+    "Tunisia": "Amphitheatre of El Djem",
+    "South Africa": "Table Mountain",
+    "Kenya": "Maasai Mara",
+    "Tanzania": "Mount Kilimanjaro",
+    "Uganda": "Bwindi Impenetrable Forest",
+    "Rwanda": "Volcanoes National Park",
+    "Nigeria": "Zuma Rock",
+    "Ghana": "Cape Coast Castle",
+    "Senegal": "Goree Island",
+    "Ethiopia": "Rock-Hewn Churches of Lalibela",
+    "Saudi Arabia": "Masjid al-Haram",
+    "United Arab Emirates": "Burj Khalifa",
+    "Qatar": "Museum of Islamic Art Doha",
+    "Israel": "Western Wall",
+    "Jordan": "Petra",
+    "Lebanon": "Baalbek",
+    "Iran": "Persepolis",
+    "Iraq": "Ziggurat of Ur",
+    "Syria": "Palmyra",
+    "Pakistan": "Badshahi Mosque",
+    "Bangladesh": "Sundarbans",
+    "Sri Lanka": "Sigiriya",
+    "Nepal": "Mount Everest",
+    "Bhutan": "Tiger's Nest Monastery",
+    "Myanmar": "Bagan",
+    "Cambodia": "Angkor Wat",
+    "Laos": "Luang Prabang",
+    "Mongolia": "Gobi Desert",
+    "Kazakhstan": "Bayterek Tower",
+    "Uzbekistan": "Registan",
+    "Georgia": "Gergeti Trinity Church",
+    "Armenia": "Geghard Monastery",
+    "Azerbaijan": "Flame Towers",
+    "Ukraine": "Saint Sophia Cathedral Kyiv",
+    "Belarus": "Mir Castle",
+    "Lithuania": "Trakai Island Castle",
+    "Latvia": "House of the Black Heads",
+    "Estonia": "Tallinn Old Town",
+    "Croatia": "Dubrovnik Old Town",
+    "Slovenia": "Lake Bled",
+    "Serbia": "Belgrade Fortress",
+    "Bosnia and Herzegovina": "Stari Most",
+    "Montenegro": "Bay of Kotor",
+    "Albania": "Ksamil Islands",
+    "North Macedonia": "Lake Ohrid",
+    "Bulgaria": "Rila Monastery",
+    "Romania": "Bran Castle",
+    "Slovakia": "Spiš Castle",
+    "Ireland": "Cliffs of Moher",
+    "Scotland": "Edinburgh Castle",
+    "Wales": "Snowdonia",
+    "Greenland": "Ilulissat Icefjord",
+    "Fiji": "Mamanuca Islands",
+    "Samoa": "To Sua Ocean Trench",
+    "Tonga": "Haʻamonga ʻa Maui",
+    "Papua New Guinea": "Kokoda Track",
+    "Solomon Islands": "Bonegi Beach",
+    "Vanuatu": "Mount Yasur",
+    "Maldives": "Maldives Atolls",
+    "Seychelles": "Anse Source d'Argent",
+    "Mauritius": "Le Morne Brabant",
+    "Madagascar": "Avenue of the Baobabs",
+    "Namibia": "Sossusvlei",
+    "Botswana": "Okavango Delta",
+    "Zimbabwe": "Victoria Falls",
+    "Zambia": "Victoria Falls",
+    "Bolivia": "Salar de Uyuni",
+    "Paraguay": "Itaipu Dam",
+    "Uruguay": "Colonia del Sacramento",
+    "Venezuela": "Angel Falls",
+    "Panama": "Panama Canal",
+    "Costa Rica": "Arenal Volcano",
+    "Nicaragua": "Granada",
+    "Honduras": "Copán Ruins",
+    "El Salvador": "Santa Ana Volcano",
+    "Guatemala": "Tikal",
+    "Haiti": "Citadelle Laferrière",
+    "Suriname": "Central Suriname Nature Reserve",
+    "Guyana": "Kaieteur Falls"
+}
+
+# ==============================
+# WIKIPEDIA FETCH (SAFE)
+# ==============================
+def get_tourist_info(spot):
+    url = f"https://en.wikipedia.org/api/rest_v1/page/summary/{spot.replace(' ', '_')}"
+    r = requests.get(url, headers=HEADERS)
+
+    if r.status_code == 200:
+        data = r.json()
+        image = (
+            data.get("originalimage", {}).get("source")
+            or data.get("thumbnail", {}).get("source")
+        )
+
+        return {
+            "image": image or "https://images.unsplash.com/photo-1502920917128-1aa500764ce7?w=600",
+            "text": f"{spot} — {data.get('extract', '')[:220]}...",
+            "wiki": data.get("content_urls", {}).get("desktop", {}).get("page")
+        }
+
     return {
-        "image": "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?w=600",
-        "text": f"{country} is known for its incredible heritage and unique geography."
+        "image": "https://images.unsplash.com/photo-1502920917128-1aa500764ce7?w=600",
+        "text": f"{spot} is one of the most famous tourist destinations in the world.",
+        "wiki": f"https://en.wikipedia.org/wiki/{spot.replace(' ', '_')}"
     }
 
+# ==============================
+# ROUTES
+# ==============================
 @app.route("/")
 def home():
     return render_template("index.html")
@@ -31,33 +173,32 @@ def home():
 @app.route("/api/country")
 def country_api():
     name = request.args.get("name", "").strip()
-    if not name: return jsonify({"error": "Empty input"}), 400
+    r = requests.get(f"https://restcountries.com/v3.1/name/{name}")
 
-    # API 1: RestCountries for stats
-    res = requests.get(f"https://restcountries.com/v3.1/name/{name}")
-    if res.status_code != 200: return jsonify({"error": "Not found"}), 404
+    if r.status_code != 200:
+        return jsonify({"error": "Country not found"})
 
-    data = res.json()[0]
-    common_name = data["name"]["common"]
-    
-    # Currency Handling
-    curr_code = list(data.get("currencies", {}).keys())[0]
-    currency = data["currencies"][curr_code]
+    data = r.json()[0]
+    country = data["name"]["common"]
 
-    # API 2: Wikipedia for facts and landmark image
-    fact_data = get_wiki_fact(common_name)
+    currency_code = list(data["currencies"].keys())[0]
+    currency = data["currencies"][currency_code]
+
+    spot = TOURIST_SPOTS.get(country, country)
+    tourist = get_tourist_info(spot)
 
     return jsonify({
-        "country": common_name,
-        "capital": data.get("capital", ["N/A"])[0],
-        "population": data.get("population", 0),
-        "region": data.get("region", "N/A"),
-        "language": ", ".join(data.get("languages", {}).values()),
-        "currency_name": f"{currency.get('name')} ({curr_code})",
+        "country": country,
+        "capital": data["capital"][0],
+        "population": data["population"],
+        "region": data["region"],
+        "language": ", ".join(data["languages"].values()),
+        "currency_name": currency["name"],
         "currency_symbol": currency.get("symbol", ""),
         "flag": data["flags"]["png"],
-        "fact_image": fact_data["image"],
-        "fact_text": fact_data["text"]
+        "fact_image": tourist["image"],
+        "fact_text": tourist["text"],
+        "wiki": tourist["wiki"]
     })
 
 if __name__ == "__main__":

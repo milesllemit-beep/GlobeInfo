@@ -3,64 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GlobeInfo | Country Explorer</title>
+    <title>GlobeInfo</title>
+
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <div class="main-wrapper">
-        <div class="card lookup-card">
-            <div class="header-blue">
-                <i class="fas fa-globe-americas"></i>
-                <span>      GlobeInfo: Country Lookup System</span>
-            </div>
-            
-            <div class="card-body">
-                <div class="search-container">
-                    <input type="text" id="searchInput" placeholder="Enter country name (e.g. Japan)">
-                    <button id="searchBtn">Search</button>
-                </div>
 
-                <div class="stats-list">
-                    <div class="stat-row"><i class="fas fa-flag"></i> <strong>Country</strong> <span id="res-country">---</span></div>
-                    <div class="stat-row"><i class="fas fa-landmark"></i> <strong>Capital</strong> <span id="res-capital">---</span></div>
-                    <div class="stat-row">
-                        <i class="fas fa-users"></i> <strong>Population</strong> 
-                        <div class="flex-grow">
-                            <span id="res-population">---</span>
-                            <img id="flag" src="https://placehold.co/40x25?text=Flag" class="mini-flag">
-                        </div>
-                    </div>
-                    <div class="stat-row"><i class="fas fa-map-marked-alt"></i> <strong>Region</strong> <span id="res-region">---</span></div>
-                    <div class="stat-row"><i class="fas fa-comments"></i> <strong>Language</strong> <span id="res-language">---</span></div>
-                    <div class="stat-row">
-                        <i class="fas fa-coins"></i> <strong>Currency</strong> 
-                        <div class="flex-grow">
-                            <span id="res-currency">---</span>
-                            <span id="res-symbol" class="currency-symbol"></span>
-                        </div>
-                    </div>
-                </div>
+<div class="main-wrapper">
 
-                <div class="action-footer">
-                    <button id="resetBtn" class="btn-secondary"><i class="fas fa-sync-alt"></i> Search Another Country</button>
-                    <button id="exitBtn" class="btn-danger">Exit</button>
-                </div>
-            </div>
+    <!-- LEFT CARD -->
+    <div class="card">
+        <div class="header">
+            🌍 GlobeInfo – Country Explorer
         </div>
 
-        <div class="card fact-card">
-            <div class="image-container">
-                <img id="fact-image" src="https://images.unsplash.com/photo-1528164344705-47542687000d?auto=format&fit=crop&w=600" alt="Country Landmark">
+        <div class="card-body">
+
+            <div class="search">
+                <input id="searchInput" placeholder="Enter country (e.g. Philippines)">
+                <button id="searchBtn">Search</button>
             </div>
-            <div class="fact-content">
-                <h2>Did You Know?</h2>
-                <p id="fact-text">Enter a country name to discover interesting historical and cultural facts!</p>
-                <a href="#" id="wikiLink" target="_blank" class="learn-more">Learn more...</a>
+
+            <div class="info">
+                <p><b>Country:</b> <span id="country">---</span></p>
+                <p><b>Capital:</b> <span id="capital">---</span></p>
+                <p><b>Population:</b> <span id="population">---</span></p>
+                <p><b>Region:</b> <span id="region">---</span></p>
+                <p><b>Language:</b> <span id="language">---</span></p>
+                <p><b>Currency:</b> <span id="currency">---</span></p>
+
+                <img id="flag" src="https://placehold.co/120x80?text=Flag">
             </div>
+
+            <!-- BUTTONS (NOT REMOVED) -->
+            <div class="actions">
+                <button id="resetBtn">Search Another Country</button>
+                <button id="exitBtn" class="danger">Exit</button>
+            </div>
+
         </div>
     </div>
 
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <!-- RIGHT CARD -->
+    <div class="card">
+        <img id="fact-image" class="hero-img"
+             src="https://images.unsplash.com/photo-1502920917128-1aa500764ce7?w=600">
+
+        <div class="fact">
+            <h2>Did You Know?</h2>
+            <p id="fact-text">
+                Search a country to discover its most famous tourist destination.
+            </p>
+            <a id="wikiLink" target="_blank">Read more on Wikipedia →</a>
+        </div>
+    </div>
+
+</div>
+
+<script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>

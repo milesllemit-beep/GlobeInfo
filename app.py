@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, jsonify
 import requests
-
+import os
 
 app = Flask(__name__)
 HEADERS = {"User-Agent": "GlobeInfo/1.0"}
@@ -202,5 +202,9 @@ def country_api():
         "wiki": tourist["wiki"]
     })
 
+# ==============================
+# RUN APP
+# ==============================
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port, debug=True)

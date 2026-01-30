@@ -1,101 +1,121 @@
+/* General Layout */
 body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f2f5;
     margin: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background: linear-gradient(135deg, #e0e7ff, #f8fafc);
-    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
+    min-height: 100vh;
 }
 
 .main-wrapper {
     display: flex;
-    gap: 30px;
+    gap: 20px;
     max-width: 1000px;
-    width: 100%;
+    width: 95%;
     padding: 20px;
 }
 
+/* Card Styling */
 .card {
     background: white;
-    border-radius: 20px;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     flex: 1;
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
 }
 
+/* --- THE BUTTON CENTER FIX --- */
+.actions {
+    display: flex;
+    justify-content: center; /* Centers buttons horizontally */
+    gap: 15px;              /* Adds space between buttons */
+    margin-top: 25px;       /* Adds space above the buttons */
+    padding-bottom: 10px;
+}
+
+button {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.3s ease;
+    background: #2563eb;
+    color: white;
+}
+
+button:hover {
+    filter: brightness(0.9);
+}
+
+button.danger {
+    background: #dc2626;
+}
+
+#resetBtn {
+    background: #e5e7eb;
+    color: #374151;
+}
+
+#resetBtn:hover {
+    background: #d1d5db;
+}
+
+/* --- SMARTPHONE RESPONSIVENESS --- */
+@media (max-width: 768px) {
+    .main-wrapper {
+        flex-direction: column; /* Stacks the two cards vertically */
+        align-items: center;
+    }
+    
+    .card {
+        width: 100%;
+    }
+
+    .actions {
+        flex-direction: column; /* Stacks buttons on top of each other on small screens */
+    }
+
+    button {
+        width: 100%; /* Makes buttons full-width on mobile for easier tapping */
+    }
+}
+
+/* Other UI Elements */
 .header {
     background: #2563eb;
     color: white;
-    padding: 16px;
-    font-size: 1.1rem;
+    padding: 15px;
+    font-weight: bold;
+    text-align: center;
 }
 
-.card-body {
-    padding: 20px;
+.card-body { padding: 20px; }
+
+.search { 
+    display: flex; 
+    gap: 10px; 
+    margin-bottom: 20px; 
 }
 
-.search {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
+#searchInput { 
+    flex: 1; 
+    padding: 12px; 
+    border-radius: 8px; 
+    border: 1px solid #d1d5db; 
 }
 
-.search input {
-    flex: 1;
-    padding: 12px;
-    border-radius: 10px;
-    border: 1px solid #ccc;
-}
-
-.search button {
-    padding: 12px 18px;
-    border-radius: 10px;
-    border: none;
-    background: #2563eb;
-    color: white;
-    cursor: pointer;
-}
-
-.info p {
-    margin: 6px 0;
-}
-
-#flag {
+#flag { 
+    width: 150px; 
+    height: auto;
+    border: 1px solid #eee; 
     margin-top: 15px;
-    width: 120px;
-    border-radius: 6px;
+    border-radius: 4px;
 }
 
-.actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 20px;
-}
-
-.actions button {
-    flex: 1;
-    padding: 12px;
-    border-radius: 10px;
-    border: none;
-    cursor: pointer;
-}
-
-.danger {
-    background: #dc2626;
-    color: white;
-}
-
-.hero-img {
-    width: 100%;
-    height: 260px;
-    object-fit: cover;
-}
-
-.fact {
-    padding: 20px;
-}
-
-.fact h2 {
-    margin-top: 0;
-}
+.hero-img { width: 100%; height: 250px; object-fit: cover; }
+.fact { padding: 20px; }

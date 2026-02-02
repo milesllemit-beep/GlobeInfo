@@ -1,18 +1,18 @@
-from flask import Flask, render_template, request, jsonify
-import requests
-import os
+from flask import Flask, render_template, request, jsonify  # I-import ang Flask at iba pang modules para sa web app
+import requests  # Para sa HTTP requests
+import os  # Para sa environment variables
 
-app = Flask(__name__)
+app = Flask(__name__)  # Gumawa ng Flask application instance
 
-HEADERS = {"User-Agent": "GlobeInfo/1.0"}
+HEADERS = {"User-Agent": "GlobeInfo/1.0"}  # Custom User-Agent para sa requests
 
 # ==============================
 # 195 GUARANTEED TOURIST SPOTS
 # ==============================
 TOURIST_SPOTS = {
     # ASIA (49)
-    "Afghanistan": "Band-e Amir",
-    "Armenia": "Geghard Monastery",
+    "Afghanistan": "Band-e Amir",  # Tourist spot sa Afghanistan
+    "Armenia": "Geghard Monastery",  # Tourist spot sa Armenia
     "Azerbaijan": "Flame Towers",
     "Bahrain": "Qal'at al-Bahrain",
     "Bangladesh": "Sundarbans",
@@ -217,20 +217,20 @@ TOURIST_SPOTS = {
 # WIKIPEDIA FETCH
 # ==============================
 def get_tourist_info(spot, flag_url):
-    url = f"https://en.wikipedia.org/api/rest_v1/page/summary/{spot.replace(' ', '_')}"
-    r = requests.get(url, headers=HEADERS)
+    url = f"https://en.wikipedia.org/api/rest_v1/page/summary/{spot.replace(' ', '_')}"  # Wikipedia API URL
+    r = requests.get(url, headers=HEADERS)  # Gumawa ng GET request
 
-    if r.status_code == 200:
-        data = r.json()
+    if r.status_code == 200:  # Kung successful
+        data = r.json()  # Kunin ang JSON
         image = (
-            data.get("originalimage", {}).get("source")
-            or data.get("thumbnail", {}).get("source")
+            data.get("originalimage", {}).get("source")  # Kunin ang main image
+            or data.get("thumbnail", {}).get("source")   # O kunin ang thumbnail
         )
 
         return {
-            "image": image if image else flag_url,
-            "text": f"{spot} — {data.get('extract', '')[:220]}...",
-            "wiki": data.get("content_urls", {}).get("desktop", {}).get("page")
+            "image": image if image else flag_url,  # Kung walang image, gamitin ang flag
+            "text": f"{spot} — {data.get('extract', '')[:220]}...",  # Maikling description
+            "wiki": data.get("content_urls", {}).get("desktop", {}).get("page")  # Wikipedia link
         }
 
     return {
@@ -244,26 +244,26 @@ def get_tourist_info(spot, flag_url):
 # ==============================
 @app.route("/")
 def home():
-    return render_template("index.html")
+    return render_template("index.html")  # I-render ang homepage
 
 @app.route("/api/country")
 def country_api():
-    name = request.args.get("name", "").strip()
-    r = requests.get(f"https://restcountries.com/v3.1/name/{name}")
+    name = request.args.get("name", "").strip()  # Kunin ang query parameter
+    r = requests.get(f"https://restcountries.com/v3.1/name/{name}")  # REST Countries API request
 
-    if r.status_code != 200:
+    if r.status_code != 200:  # Kung hindi matagumpay
         return jsonify({"error": "Country not found"})
 
-    data = r.json()[0]
-    country = data["name"]["common"]
-    flag_url = data["flags"]["png"]
+    data = r.json()[0]  # Kunin ang first result
+    country = data["name"]["common"]  # Pangkaraniwang pangalan
+    flag_url = data["flags"]["png"]  # URL ng flag
 
-    currency_code = list(data["currencies"].keys())[0]
-    currency = data["currencies"][currency_code]
+    currency_code = list(data["currencies"].keys())[0]  # Kunin ang currency code
+    currency = data["currencies"][currency_code]  # Kunin ang currency info
 
-    spot = TOURIST_SPOTS.get(country)
+    spot = TOURIST_SPOTS.get(country)  # Hanapin ang tourist spot
     if spot:
-        tourist = get_tourist_info(spot, flag_url)
+        tourist = get_tourist_info(spot, flag_url)  # Kunin ang info
         fact_image = tourist["image"]
         fact_text = tourist["text"]
         wiki = tourist["wiki"]
@@ -290,5 +290,5 @@ def country_api():
 # RUN APP
 # ==============================
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 10000))
-    app.run(host="0.0.0.0", port=port, debug=True)
+    port = int(os.environ.get("PORT", 10000))  # Kunin ang port mula sa environment variable
+    app.run(host="0.0.0.0", port=port, debug=True)  # Patakbuhin ang Flask app

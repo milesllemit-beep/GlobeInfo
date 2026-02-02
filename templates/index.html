@@ -7,26 +7,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GlobeInfo</title>
 
+    <!-- Link sa CSS file -->
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- Link sa Font Awesome para sa icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
 <div class="main-wrapper">
 
-    <!-- LEFT CARD -->
+    <!-- LEFT CARD / Kaliwang Card -->
     <div class="card">
+        <!-- Header ng card -->
         <div class="header">
             🌍 GlobeInfo – Country Look-up System
         </div>
 
         <div class="card-body">
 
+            <!-- Search section / Bahagi ng paghahanap -->
             <div class="search">
                 <input id="searchInput" placeholder="Enter country (e.g. Philippines)">
                 <button id="searchBtn">Search</button>
             </div>
 
+            <!-- Country Information / Impormasyon tungkol sa bansa -->
             <div class="info">
                 <p><b>Country:</b> <span id="country">---</span></p>
                 <p><b>Capital:</b> <span id="capital">---</span></p>
@@ -35,10 +40,11 @@
                 <p><b>Language:</b> <span id="language">---</span></p>
                 <p><b>Currency:</b> <span id="currency">---</span></p>
 
+                <!-- Flag ng bansa -->
                 <img id="flag" src="https://placehold.co/120x80?text=Flag">
             </div>
 
-            <!-- BUTTONS (NOT REMOVED) -->
+            <!-- BUTTONS / Mga Button -->
             <div class="actions">
                 <button id="resetBtn">Search Another Country</button>
                 <button id="exitBtn" class="danger">Exit</button>
@@ -47,22 +53,26 @@
         </div>
     </div>
 
-    <!-- RIGHT CARD -->
+    <!-- RIGHT CARD / Kanang Card -->
     <div class="card">
+        <!-- Hero image / Pangunahing larawan -->
         <img id="fact-image" class="hero-img"
              src="https://images.unsplash.com/photo-1502920917128-1aa500764ce7?w=600">
 
+        <!-- Fun Fact Section / Bahagi ng kaalaman -->
         <div class="fact">
             <h2>Did You Know?</h2>
             <p id="fact-text">
-                Search a country to discover its most famous tourist destination.
+                Search a country to discover fun facts about countries!.
             </p>
+            <!-- Link sa Wikipedia -->
             <a id="wikiLink" target="_blank">Read more on Wikipedia →</a>
         </div>
     </div>
 
 </div>
 
+<!-- Link sa JavaScript file -->
 <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
